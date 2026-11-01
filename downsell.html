@@ -31,7 +31,7 @@ li:before{content:"";position:absolute;left:0;top:7px;width:14px;height:14px;bor
 </head>
 <body>
 <div class="wrap">
-  <div class="step">Wait — one smaller option</div>
+  <div class="step">Wait — one smaller option · closes in <span id="tick">—</span></div>
   <h1>Take the <span>four fastest agents</span> for $12 instead.</h1>
   <p class="sub">If $19 is more than you want today, take the four that pay for themselves first. Same window, smaller price, four of the five.</p>
 
@@ -51,5 +51,26 @@ li:before{content:"";position:absolute;left:0;top:7px;width:14px;height:14px;bor
 
   <p class="note">Four prompts, not five. One collected balance covers the $12 several times over.</p>
 </div>
+
+<script>
+(function(){
+  var out=document.getElementById('tick'); if(!out) return;
+  function nextSun(){
+    var now=new Date();
+    // 23:59 no fuso do leste, via offset calculado
+    var et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+    var diff=(7-et.getDay())%7;
+    var d=new Date(et); d.setDate(et.getDate()+diff); d.setHours(23,59,0,0);
+    if(diff===0 && (et.getHours()>23 || (et.getHours()===23 && et.getMinutes()>=59))) d.setDate(d.getDate()+7);
+    return d - et;
+  }
+  function fmt(ms){
+    var m=Math.floor(ms/60000), d=Math.floor(m/1440), h=Math.floor(m%1440/60), mi=m%60;
+    return (d>0?d+'d ':'')+h+'h '+mi+'m';
+  }
+  function tick(){ var ms=nextSun(); out.textContent=fmt(ms); }
+  tick(); setInterval(tick,30000);
+})();
+</script>
 </body>
 </html>
